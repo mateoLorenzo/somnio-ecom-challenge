@@ -44,9 +44,30 @@ export const productCardStyles = {
     width: 100%;
     height: 300px;
     background-color: white;
-    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     overflow: hidden;
     border-bottom: 1px solid #cbd5e1;
+  `,
+  imageLoadingContainer: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    z-index: 1;
+  `,
+  image: css`
+    object-fit: contain;
+  `,
+  imageHidden: css`
+    opacity: 0;
   `,
   plusIcon: css`
     position: absolute;
@@ -64,9 +85,6 @@ export const productCardStyles = {
       border-color: #000;
       color: #000;
     }
-  `,
-  image: css`
-    object-fit: contain;
   `,
   priceContainer: (product: Product) => css`
     position: absolute;

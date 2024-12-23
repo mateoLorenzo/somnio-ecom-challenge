@@ -2,6 +2,7 @@
 "use client";
 /** @jsxImportSource @emotion/react */
 import React, { use, useEffect, useState } from "react";
+import { css } from "@emotion/react";
 import { getProducts } from "@/app/services/products";
 import { Product } from "@/types/api";
 import Image from "next/image";
@@ -36,6 +37,9 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = use(params);
   const [quantity, setQuantity] = useState(1);
   const [isImageLoading, setIsImageLoading] = useState(true);
+  const [recommendedImagesLoading, setRecommendedImagesLoading] = useState<{
+    [key: number]: boolean;
+  }>({});
   const [isLoading, setIsLoading] = useState(true);
   const { addToCart, products, setProducts } = useStore();
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
@@ -70,6 +74,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     try {
       const randomProducts = getRandomProducts(products, product);
       setRecommendedProducts(randomProducts);
+      const initialLoadingState = randomProducts.reduce((acc, product) => {
+        acc[product.id] = true;
+        return acc;
+      }, {} as { [key: number]: boolean });
+      setRecommendedImagesLoading(initialLoadingState);
     } catch (error) {
       console.error("Error setting recommended products:", error);
       setRecommendedProducts([]);
@@ -233,12 +242,31 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
                   >
                     <div css={productPageStyles.recommendedProductCard}>
                       <div css={productPageStyles.recommendedImageContainer}>
+                        {recommendedImagesLoading[recommendedProduct.id] && (
+                          <div css={productPageStyles.imageLoadingContainer}>
+                            <LoadingSpinner />
+                          </div>
+                        )}
                         <Image
                           src={recommendedProduct.image}
                           alt={recommendedProduct.title}
                           width={200}
                           height={200}
-                          css={productPageStyles.recommendedImage}
+                          css={css`
+                            ${productPageStyles.recommendedImage};
+                            opacity: ${recommendedImagesLoading[
+                              recommendedProduct.id
+                            ]
+                              ? 0
+                              : 1};
+                            transition: opacity 0.2s ease-in-out;
+                          `}
+                          onLoadingComplete={() => {
+                            setRecommendedImagesLoading((prev) => ({
+                              ...prev,
+                              [recommendedProduct.id]: false,
+                            }));
+                          }}
                         />
                       </div>
                       <div css={productPageStyles.recommendedProductInfo}>

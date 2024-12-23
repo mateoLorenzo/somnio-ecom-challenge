@@ -8,6 +8,9 @@ import { IoAddOutline, IoCheckmark } from "react-icons/io5";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { productCardStyles } from "./styles";
+import { useState } from "react";
+import { LoadingSpinner } from "../LoadingSpinner";
+import { css } from "@emotion/react";
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +19,7 @@ interface ProductCardProps {
 export const ProductCard = ({ product }: ProductCardProps) => {
   const router = useRouter();
   const { buttonStates, setButtonStates, addToCart } = useStore();
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const handleAddToCart = async (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -23,13 +27,13 @@ export const ProductCard = ({ product }: ProductCardProps) => {
       ...prev,
       [product.id]: { isLoading: true, isSuccess: false },
     }));
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Just for cool effect
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     addToCart(product);
     setButtonStates((prev) => ({
       ...prev,
       [product.id]: { isLoading: false, isSuccess: true },
     }));
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Just for cool effect
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setButtonStates((prev) => ({
       ...prev,
       [product.id]: { isLoading: false, isSuccess: false },
@@ -73,13 +77,23 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         {getButtonContent(product.id)}
       </Button>
       <div css={productCardStyles.imageContainer}>
+        {isImageLoading && (
+          <div css={productCardStyles.imageLoadingContainer}>
+            <LoadingSpinner />
+          </div>
+        )}
         <Image
           src={product.image}
           alt={product.title}
           fill
           sizes="300px"
           priority={false}
-          css={productCardStyles.image}
+          css={css`
+            ${productCardStyles.image};
+            opacity: ${isImageLoading ? 0 : 1};
+            transition: opacity 0.2s ease-in-out;
+          `}
+          onLoadingComplete={() => setIsImageLoading(false)}
         />
         <div css={productCardStyles.priceContainer(product)}>
           <p>USD {product.price.toFixed(2)}</p>
