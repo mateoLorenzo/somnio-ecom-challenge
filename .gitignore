@@ -23,9 +23,6 @@
 # coverage
 coverage/
 
-# lib
-lib/
-
 # production
 /build
 
