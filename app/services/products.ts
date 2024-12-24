@@ -1,12 +1,22 @@
 import { Product } from "@/types/api";
-import { APP_CONFIG } from "../config/constants";
 
-export async function getProducts(): Promise<Product[]> {
-  const response = await fetch(APP_CONFIG.API.BASE_URL!, {
-    next: { revalidate: APP_CONFIG.PRODUCTS.REVALIDATE_TIME },
-  });
-  if (!response.ok) {
-    throw new Error("Failed to fetch products");
+export const getProducts = async (): Promise<Product[]> => {
+  try {
+    const response = await fetch("/api/products");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to fetch products");
+    }
+
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid response format from API");
+    }
+
+    return data;
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "An unexpected error occurred";
+    throw new Error(message);
   }
-  return response.json();
-}
+};

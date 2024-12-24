@@ -14,6 +14,7 @@ import { ProductCard } from "../components/ProductCard/ProductCard";
 import { Header } from "../components/Header";
 import { homeStyles } from "./styles";
 import { MdOutlineSearchOff } from "react-icons/md";
+import { ErrorDialog } from "../components/ErrorDialog/ErrorDialog";
 
 const NoResultsMessage = ({
   searchTerm,
@@ -48,22 +49,28 @@ export default function HomePage() {
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(false);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (products.length > 0) return;
+  const fetchProductsIfNeeded = async () => {
+    if (!products || products.length === 0) {
       try {
         setIsLoading(true);
-        const data = await getProducts();
-        setProducts(data);
+        const fetchedProducts = await getProducts();
+        setProducts(fetchedProducts);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to fetch products";
+        setError(errorMessage);
+        setShowError(true);
       } finally {
         setIsLoading(false);
       }
-    };
+    }
+  };
 
-    fetchProducts();
+  useEffect(() => {
+    fetchProductsIfNeeded();
   }, []);
 
   const handleLoadMore = async () => {
@@ -145,6 +152,14 @@ export default function HomePage() {
           </>
         )}
       </div>
+      {showError && error && (
+        <ErrorDialog
+          isOpen={showError}
+          onCloseAction={() => setShowError(false)}
+          error={error}
+          onRetryAction={fetchProductsIfNeeded}
+        />
+      )}
     </div>
   );
 }
