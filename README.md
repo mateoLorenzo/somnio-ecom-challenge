@@ -30,24 +30,29 @@ Check out the live demo: [Somnio Challenge](https://somnio-ecom-challenge.vercel
 ### Prerequisites
 
 Make sure you have Node.js installed. This project uses a specific Node.js version:
+
 ```bash
 nvm use
 ```
+
 This will automatically switch to the correct Node.js version specified in `.nvmrc`
 
 ### Installation Steps
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/mateoLorenzo/somnio-ecom-challenge/
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -57,17 +62,42 @@ This will automatically switch to the correct Node.js version specified in `.nvm
 ## 🧪 Testing
 
 Run the test suite:
+
 ```bash
 npm test
 ```
 
-## 📦 Available Scripts
+## 🚀 Additional Features
 
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm start`: Run production server
-- `npm test`: Run test suite
-- `npm run lint`: Run linter
+### Improved Product Experience
+
+- Detailed product page with extended information
+- "You May Also Like" carousel with recommended products
+- Breadcrumb navigation for better user orientation
+- Quantity selector before adding to cart
+
+### Advanced Cart Functionality
+
+- Increment/decrement buttons for quantity management
+- Real-time total calculation
+- Styled empty cart state with CTA
+
+### UX Improvements
+
+- Loading spinners for image optimization
+- Smooth page transitions
+- Elegant error handling with Error Boundary
+- "No products found" message for empty search results
+- Interactive button states and hover effects
+
+### Technical Enhancements
+
+- Component testing with Jest and React Testing Library
+- Global state management with Zustand
+- Strict TypeScript typing
+- Reusable UI components with Shadcn
+- Modular styling with Emotion
+
 
 ## 🎨 Project Structure
 
