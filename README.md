@@ -61,13 +61,36 @@ Run the test suite:
 npm test
 ```
 
-## 📦 Available Scripts
+## 🚀 Additional Features
 
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm start`: Run production server
-- `npm test`: Run test suite
-- `npm run lint`: Run linter
+### Improved Product Experience
+
+- ⁠Detailed product page with extended information
+- ⁠"You May Also Like" carousel with recommended products
+- ⁠Breadcrumb navigation for better user orientation
+- ⁠Quantity selector before adding to cart
+
+### Advanced Cart Functionality
+
+- ⁠Increment/decrement buttons for quantity management
+- ⁠Real-time total calculation
+- Styled empty cart state with CTA
+
+### UX Improvements
+
+- ⁠Loading spinners for image optimization
+- ⁠Smooth page transitions
+- Elegant error handling with Error Boundary
+- ⁠"No products found" message for empty search results
+- ⁠Interactive button states and hover effects
+
+### Technical Enhancements
+
+- ⁠Component testing with Jest and React Testing Library
+- ⁠Global state management with Zustand
+- ⁠Strict TypeScript typing
+- ⁠Reusable UI components with Shadcn
+- ⁠Modular styling with Emotion
 
 ## 🎨 Project Structure
 
@@ -81,14 +104,6 @@ npm test
 ├── types/ # TypeScript definitions
 └── tests/ # Test files
 ```
-
-## 🔧 Development Practices
-
-- Clean code architecture
-- Component-based development
-- Responsive design principles
-- Performance optimization
-- Modern testing practices
 
 ## 👨‍💻 Author
 
