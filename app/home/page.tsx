@@ -50,27 +50,29 @@ export default function HomePage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [showError, setShowError] = useState(false);
 
-  const fetchProductsIfNeeded = async () => {
-    if (!products || products.length === 0) {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (products.length > 0) return;
       try {
         setIsLoading(true);
-        const fetchedProducts = await getProducts();
-        setProducts(fetchedProducts);
+        const data = await getProducts();
+        if (!data) throw new Error("Failed to fetch products");
+        setProducts(data);
+        setError(null);
       } catch (error) {
         const errorMessage =
-          error instanceof Error ? error.message : "Failed to fetch products";
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred while fetching products";
+        console.error("Error fetching products:", error);
         setError(errorMessage);
-        setShowError(true);
       } finally {
         setIsLoading(false);
       }
-    }
-  };
+    };
 
-  useEffect(() => {
-    fetchProductsIfNeeded();
+    fetchProducts();
   }, []);
 
   const handleLoadMore = async () => {
@@ -111,55 +113,62 @@ export default function HomePage() {
     !isLoading && searchTerm && visibleProducts.length === 0;
 
   return (
-    <div css={homeStyles.screenContainer}>
-      <Header
-        showSearch={true}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
+    <>
+      <ErrorDialog
+        isOpen={!!error}
+        error={error || ""}
+        onCloseAction={() => setError(null)}
+        onRetryAction={() => {
+          setError(null);
+          setProducts([]);
+          setIsLoading(true);
+        }}
       />
-      <div css={homeStyles.contentContainer}>
-        {shouldShowNoResults ? (
-          <NoResultsMessage
-            searchTerm={searchTerm}
-            onClear={handleClearSearch}
-          />
-        ) : (
-          <>
-            <div css={homeStyles.productsContainer}>
-              {visibleProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-
-            {hasMoreProducts && (
-              <Button
-                onClick={handleLoadMore}
-                disabled={isLoadingMore}
-                css={homeStyles.loadMoreButton}
-              >
-                {isLoadingMore ? (
-                  <Loader2
-                    size={20}
-                    css={homeStyles.loadMoreButtonIcon}
-                    className="animate-spin"
-                  />
-                ) : (
-                  <IoAddOutline size={20} css={homeStyles.loadMoreButtonIcon} />
-                )}
-                Load More
-              </Button>
-            )}
-          </>
-        )}
-      </div>
-      {showError && error && (
-        <ErrorDialog
-          isOpen={showError}
-          onCloseAction={() => setShowError(false)}
-          error={error}
-          onRetryAction={fetchProductsIfNeeded}
+      <div css={homeStyles.screenContainer}>
+        <Header
+          showSearch={true}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
         />
-      )}
-    </div>
+        <div css={homeStyles.contentContainer}>
+          {shouldShowNoResults ? (
+            <NoResultsMessage
+              searchTerm={searchTerm}
+              onClear={handleClearSearch}
+            />
+          ) : (
+            <>
+              <div css={homeStyles.productsContainer}>
+                {visibleProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+
+              {hasMoreProducts && (
+                <Button
+                  onClick={handleLoadMore}
+                  disabled={isLoadingMore}
+                  css={homeStyles.loadMoreButton}
+                >
+                  {isLoadingMore ? (
+                    <Loader2
+                      size={20}
+                      css={homeStyles.loadMoreButtonIcon}
+                      className="animate-spin"
+                    />
+                  ) : (
+                    <IoAddOutline
+                      size={20}
+                      css={homeStyles.loadMoreButtonIcon}
+                    />
+                  )}
+                  Load More
+                </Button>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
